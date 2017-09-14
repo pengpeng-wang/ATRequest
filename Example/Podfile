@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'ATRequest_Example' do
+  pod 'ATRequest', :path => '../'
+
+  target 'ATRequest_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

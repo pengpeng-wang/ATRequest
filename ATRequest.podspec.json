@@ -1,0 +1,22 @@
+{
+  "name": "ATRequest",
+  "version": "0.1.0",
+  "summary": "A short description of ATRequest.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/makw@hui10.com/ATRequest",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "makw@hui10.com": "admin@makaiwen.com"
+  },
+  "source": {
+    "git": "https://github.com/makw@hui10.com/ATRequest.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "ATRequest/Classes/**/*"
+}

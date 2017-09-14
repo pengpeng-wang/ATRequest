@@ -1,0 +1,16 @@
+PODS:
+  - ATRequest (0.1.0)
+
+DEPENDENCIES:
+  - ATRequest (from `../`)
+
+EXTERNAL SOURCES:
+  ATRequest:
+    :path: ../
+
+SPEC CHECKSUMS:
+  ATRequest: a305876d2a241f5ea278449e2627814195e36a51
+
+PODFILE CHECKSUM: a882b7c184e423f50b3d9c73c7ad6b5ba34cb803
+
+COCOAPODS: 1.2.1

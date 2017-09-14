@@ -1,0 +1,6 @@
+framework module ATRequest {
+  umbrella header "ATRequest-umbrella.h"
+
+  export *
+  module * { export * }
+}
