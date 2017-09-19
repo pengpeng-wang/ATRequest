@@ -10,43 +10,20 @@ import UIKit
 import ATRequest
 import ObjectMapper
 
-class ARequest: ATRequest {
-//    func request() {
-//        
-//    }
-//
-//    var requestUseDefaultHeaders: Bool = true
-//
-//    var requestUseDefaultParameters: Bool = true
-//
-//    var requestHeaders: [String : String]?
-//
-//    
-    init() {
-        
-    }
-    
-    var requestDelegate: RequestDelegate?
+class ARequest : BaseRequest<TestModel> {
 
-    var requestUrl: String {
-        return "https://p.webdev.hui10.com/api/app/list"
-    }
+//    override var requestUrl: String {
+//        return "https://p.webdev.hui10.com/api/app/list"
+//    }
     
-    var requestParameters: [String : Any]? {
+    override var requestParameters: [String : Any]? {
         return ["platform":"android"]
     }
     
-    var requestMethod: ATRequestMethod {
+    override var requestMethod: ATRequestMethod {
         return .post
     }
-    
-    var responseClass: Model.Type {
-//        let v = TestModel(JSONString:"")
-//        
-//        print(v)
-//        return ""
-        return TestModel.self
-    }
+
     
     func callback(response : Any) {
         print("\(response)")

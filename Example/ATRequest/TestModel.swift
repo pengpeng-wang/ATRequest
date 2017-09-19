@@ -33,7 +33,7 @@ class TestModel: Model {
     var version : String?
     
     
-    func valueMap(map:M) {
+    override func valueMap(_ map:M) {
         build <- map["build"]
         icon <- map["icon"]
         id <- map["id"]

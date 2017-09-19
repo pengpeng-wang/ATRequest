@@ -17,6 +17,9 @@ let ErrorDemainNoHandleCode = -425
 let ErrorDemainFormatError = "com.atrequest.error.format"
 let ErrorDemainFormatErrorCode = -534
 
+let ErrorDemainNoResponse = "com.atrequest.error.noresponse"
+let ErrorDemainNoResponseCode = -642
+
 extension NSError {
     open class func noHandleError() -> NSError {
         return NSError.init(domain: ErrorDemainNoHandle, code: ErrorDemainNoHandleCode, userInfo: [NSLocalizedDescriptionKey : "没有添加处理方法"])
@@ -26,6 +29,9 @@ extension NSError {
     }
     open class func formatError() -> NSError {
         return NSError.init(domain: ErrorDemainFormatError, code: ErrorDemainFormatErrorCode, userInfo: [NSLocalizedDescriptionKey : "数据解析异常"])
+    }
+    open class func noResponseError() -> NSError {
+        return NSError.init(domain: ErrorDemainNoResponse, code: ErrorDemainNoResponseCode, userInfo: [NSLocalizedDescriptionKey : "无响应"])
     }
     open var mesage : String? {
         return self.userInfo[NSLocalizedDescriptionKey] as? String

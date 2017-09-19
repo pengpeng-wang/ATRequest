@@ -11,7 +11,7 @@ import ATRequest
 
 class ViewController: UIViewController {
 
-    var request : ARequest = ARequest()
+    var request = ARequest()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +58,7 @@ extension ViewController : RequestDelegate {
     }
     
     func request(_ request: ATRequest, didFailedRequestWithError error: Error) {
-        
+        print(error)
     }
 }
 
