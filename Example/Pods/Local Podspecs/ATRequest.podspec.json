@@ -3,20 +3,31 @@
   "version": "0.1.0",
   "summary": "A short description of ATRequest.",
   "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/makw@hui10.com/ATRequest",
+  "homepage": "https://git.makaiwen.com/kevin/ATRequest",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
   },
   "authors": {
-    "makw@hui10.com": "admin@makaiwen.com"
+    "makw@hui10.com": "makw@hui10.com"
   },
   "source": {
-    "git": "https://github.com/makw@hui10.com/ATRequest.git",
+    "git": "https://git.makaiwen.com/kevin/ATRequest.git",
     "tag": "0.1.0"
   },
   "platforms": {
-    "ios": "8.0"
+    "ios": "9.0"
+  },
+  "dependencies": {
+    "Alamofire": [
+
+    ],
+    "YYCache": [
+
+    ],
+    "ObjectMapper": [
+
+    ]
   },
   "source_files": "ATRequest/Classes/**/*"
 }

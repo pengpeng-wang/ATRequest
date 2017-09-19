@@ -6,6 +6,5 @@ target 'ATRequest_Example' do
   target 'ATRequest_Tests' do
     inherit! :search_paths
 
-    
   end
 end
