@@ -36,7 +36,14 @@ class ViewController: UIViewController {
             dict.updateValue("kevin", forKey: "name")
         }
         self.request.requestDelegate = self
-        self.request.request()
+        self.request.requestWithSuccess({ (object, cache) in
+            print(object!)
+            let o = object! as! [[String:Any]]
+            let a = o.first
+            print(o)
+        }) { (e) in
+            
+        }
         
      
         // Do any additional setup after loading the view, typically from a nib.
@@ -52,7 +59,7 @@ class ViewController: UIViewController {
 extension ViewController : RequestDelegate {
     func request(_ request: ATRequest, didFinishRequestWithObject object: Any?, fromCache: Bool) {
         print(object!)
-        let o = object! as! Array<TestModel>
+        let o = object! as! [[String:Any]]
         let a = o.first
         print(o)
     }

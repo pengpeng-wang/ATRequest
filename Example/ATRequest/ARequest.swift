@@ -10,11 +10,11 @@ import UIKit
 import ATRequest
 import ObjectMapper
 
-class ARequest : BaseRequest<TestModel> {
+class ARequest : BaseRequest<Default> {
 
-//    override var requestUrl: String {
-//        return "https://p.webdev.hui10.com/api/app/list"
-//    }
+    override var requestUrl: String {
+        return "https://p.webdev.hui10.com/api/app/list"
+    }
     
     override var requestParameters: [String : Any]? {
         return ["platform":"android"]
@@ -23,7 +23,10 @@ class ARequest : BaseRequest<TestModel> {
     override var requestMethod: ATRequestMethod {
         return .post
     }
-
+    
+    override var cacheMode: CacheMode {
+        return .cacheNoRequest(cacheInterval: 3600 * 24)
+    }
     
     func callback(response : Any) {
         print("\(response)")
