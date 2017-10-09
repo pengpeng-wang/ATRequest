@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (4.5.0)
+  - Alamofire (4.5.1)
   - ATRequest (0.1.0):
     - Alamofire
     - ObjectMapper
@@ -12,10 +12,10 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   ATRequest:
-    :path: ../
+    :path: "../"
 
 SPEC CHECKSUMS:
-  Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
+  Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
   ATRequest: 14193be509cd7aa11d3f7e755eb061021de8300f
   ObjectMapper: 3d571bb5af471c779e1160828cd9ad5c4ef90958
   YYCache: 8105b6638f5e849296c71f331ff83891a4942952

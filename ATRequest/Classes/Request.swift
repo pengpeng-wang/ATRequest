@@ -11,10 +11,10 @@ import Alamofire
 import ObjectMapper
 
 public typealias ATRequestManager = SessionManager
+open class Default {}
 
 open class BaseRequest<T:EnableMap>: ATRequest {
     
-    open class Default {}
     
     open var requestUrl: String {return "" }
     

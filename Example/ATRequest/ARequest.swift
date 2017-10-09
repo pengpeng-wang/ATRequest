@@ -12,9 +12,9 @@ import ObjectMapper
 
 class ARequest : BaseRequest<TestModel> {
 
-//    override var requestUrl: String {
-//        return "https://p.webdev.hui10.com/api/app/list"
-//    }
+    override var requestUrl: String {
+        return "https://p.webdev.hui10.com/api/app/list"
+    }
     
     override var requestParameters: [String : Any]? {
         return ["platform":"android"]
