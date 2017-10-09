@@ -8,6 +8,11 @@
 
 import UIKit
 
+public enum CacheMode {
+    case noneCache
+    case cacheNoRequest(cacheInterval : TimeInterval)
+    case alwaysRequest(cacheInterval : TimeInterval)
+}
 
 public protocol ATRequest : class {
     
@@ -26,9 +31,8 @@ public protocol ATRequest : class {
     var requestUseDefaultHeaders : Bool {get}
     
     var requestBaseUrlIndex : Int {get}
-    
-    func request()
-
+        
+    var cacheMode : CacheMode {get}
 }
 
 public extension ATRequest {
