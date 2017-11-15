@@ -2,7 +2,7 @@ PODS:
   - Alamofire (4.5.1)
   - ATRequest (0.1.0):
     - Alamofire
-    - ObjectMapper
+    - ObjectMapper (= 3.1.0)
     - YYCache
   - ObjectMapper (3.1.0)
   - YYCache (1.0.4)
@@ -16,7 +16,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
-  ATRequest: 14193be509cd7aa11d3f7e755eb061021de8300f
+  ATRequest: 4c8e0d629750e751a719f6ebb49506d913d0b475
   ObjectMapper: 20505058f54e5c3ca69e1d6de9897d152a5369a6
   YYCache: 8105b6638f5e849296c71f331ff83891a4942952
 

@@ -12,7 +12,7 @@ import ObjectMapper
 import YYCache
 
 public typealias ATRequestManager = SessionManager
-open class Default {}
+//open class Default {}
 
 open class Default : BaseMappable {
     public func mapping(map: Map) {
