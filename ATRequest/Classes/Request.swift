@@ -77,11 +77,11 @@ open class BaseRequest<T:EnableMap>: ATRequest {
                 self.success?(resultObj as Any,true)
                 self.requestDelegate?.request(self, didFinishRequestWithObject:resultObj, fromCache: true)
             }
-            if stop { return }
+            if stop && data != nil { return }
         }
         
         let manager = RequestConfig.requestManager
-        manager.request(url, method: self.requestMethod.convert(), parameters: parameter, encoding: JSONEncoding.default, headers: header).validate(contentType: ["application/json"]).responseJSON { [unowned self] (response) in
+        manager.request(url, method: self.requestMethod.convert(), parameters: parameter, encoding: JSONEncoding.default, headers: header).validate(contentType: ["application/json","text/json"]).responseJSON { [unowned self] (response) in
             print(response)
             if response.response != nil {
                 let result = RequestConfig.responseHandler(url,response.response,false,response.result.value)

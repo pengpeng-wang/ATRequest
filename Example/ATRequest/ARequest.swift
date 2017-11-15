@@ -13,20 +13,24 @@ import ObjectMapper
 class ARequest : BaseRequest<Default> {
 
     override var requestUrl: String {
-        return "https://p.webdev.hui10.com/api/app/list"
+//        return "https://p.webdev.hui10.com/api/app/list"
+                return "http://172.16.3.155:3000/record/list"
     }
     
     override var requestParameters: [String : Any]? {
-        return ["platform":"android"]
+//        return ["platform":"android"]
+                return ["duration" : "week"]
     }
     
     override var requestMethod: ATRequestMethod {
-        return .post
+        return .get
     }
     
     override var cacheMode: CacheMode {
-        return .cacheNoRequest(cacheInterval: 3600 * 24)
+        return .noneCache
+//        return .cacheNoRequest(cacheInterval: 3600 * 24)
     }
+    
     
     func callback(response : Any) {
         print("\(response)")
