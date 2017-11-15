@@ -4,7 +4,7 @@ PODS:
     - Alamofire
     - ObjectMapper
     - YYCache
-  - ObjectMapper (2.2.8)
+  - ObjectMapper (3.1.0)
   - YYCache (1.0.4)
 
 DEPENDENCIES:
@@ -12,14 +12,14 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   ATRequest:
-    :path: "../"
+    :path: ../
 
 SPEC CHECKSUMS:
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
   ATRequest: 14193be509cd7aa11d3f7e755eb061021de8300f
-  ObjectMapper: 3d571bb5af471c779e1160828cd9ad5c4ef90958
+  ObjectMapper: 20505058f54e5c3ca69e1d6de9897d152a5369a6
   YYCache: 8105b6638f5e849296c71f331ff83891a4942952
 
 PODFILE CHECKSUM: c8e9a7e57dbf7c5b6143624c95b4686224f46b9b
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.3.1

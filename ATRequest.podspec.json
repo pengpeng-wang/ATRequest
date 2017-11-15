@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "summary": "A short description of ATRequest.",
   "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://git.makaiwen.com/kevin/ATRequest",
+  "homepage": "https://github.com/agile-swift/ATRequest",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
@@ -12,7 +12,7 @@
     "makw@hui10.com": "makw@hui10.com"
   },
   "source": {
-    "git": "https://git.makaiwen.com/kevin/ATRequest.git",
+    "git": "https://github.com/agile-swift/ATRequest.git",
     "tag": "0.1.0"
   },
   "platforms": {
