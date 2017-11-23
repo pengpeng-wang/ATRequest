@@ -8,38 +8,58 @@
 
 import UIKit
 import ATRequest
-import ObjectMapper
+//import ObjectMapper
+//import HandyJSON
 
-public enum Status : Int{
+public enum Status : Int,ResponseEnum{
     case NOOK = 0
     case OK = 1
     case HAHA = 2
 }
 
-class TestModel: Model {
+class TestModel: ResponseModel {
 
-    var build : Int = 0
+    required init() {}
     
-    var icon : String?
-    
-    var id : Int64 = 0
-    
-    var name : String?
-    
-    var status : Status = .OK
-    
-    var update_time : Int = 0
-    
-    var version : String?
-    
-    
-    override func valueMap(_ map:M) {
-        build <- map["build"]
-        icon <- map["icon"]
-        id <- map["id"]
-        name <- map["name"]
-        status <- map["status"]
-        update_time <- map["update_time"]
-        version <- map["version"]
+    var title : String?
+    var rating : RatingModel?
+//    var genres
+    var casts : [PersonModel]?
+    var collect_count : Int?
+    var original_title : String?
+    var subtype : String?
+    var directors : [PersonModel]?
+    var images : [AvatarModel]?
+    var year : String?
+    var alt : String?
+    var id : String?
+    var cellHeight : Double?
+
+    func didFinishMapping() {
+        print("解析完成")
     }
+}
+
+class AvatarModel: ResponseModel {
+    required init() {}
+
+    var small : String?
+    var large : String?
+    var medium : String?
+}
+
+class PersonModel: ResponseModel {
+    required init() {}
+
+    var alt : String?
+    var name : String?
+    var id : String?
+    var avatars : AvatarModel?
+}
+
+class RatingModel: ResponseModel {
+    required init() {}
+
+    var average : String?
+    var stars : String?
 }

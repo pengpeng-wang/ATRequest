@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A37A2361FC6B08A00141240 /* BRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A37A2351FC6B08A00141240 /* BRequest.swift */; };
 		0ADCAE971F6A6B52000E5D37 /* ARequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ADCAE961F6A6B52000E5D37 /* ARequest.swift */; };
 		0ADCAE991F6A70E4000E5D37 /* ATRequest.podspec.json in Resources */ = {isa = PBXBuildFile; fileRef = 0ADCAE981F6A70E4000E5D37 /* ATRequest.podspec.json */; };
 		0ADCAEBD1F6A8F7A000E5D37 /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ADCAEBC1F6A8F7A000E5D37 /* TestModel.swift */; };
@@ -32,6 +33,7 @@
 
 /* Begin PBXFileReference section */
 		003B94D1AEB5F04DB45FAB66 /* Pods-ATRequest_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ATRequest_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-ATRequest_Example/Pods-ATRequest_Example.release.xcconfig"; sourceTree = "<group>"; };
+		0A37A2351FC6B08A00141240 /* BRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BRequest.swift; sourceTree = "<group>"; };
 		0ADCAE961F6A6B52000E5D37 /* ARequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARequest.swift; sourceTree = "<group>"; };
 		0ADCAE981F6A70E4000E5D37 /* ATRequest.podspec.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = ATRequest.podspec.json; path = ../ATRequest.podspec.json; sourceTree = "<group>"; };
 		0ADCAEBC1F6A8F7A000E5D37 /* TestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModel.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				0ADCAE961F6A6B52000E5D37 /* ARequest.swift */,
+				0A37A2351FC6B08A00141240 /* BRequest.swift */,
 				0ADCAEBC1F6A8F7A000E5D37 /* TestModel.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
@@ -222,10 +225,12 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = JL4J322NSA;
 						LastSwiftMigration = 0820;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = JL4J322NSA;
 						LastSwiftMigration = 0820;
 						TestTargetID = 607FACCF1AFB9204008FA782;
 					};
@@ -362,14 +367,14 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-ATRequest_Example/Pods-ATRequest_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/ATRequest/ATRequest.framework",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
+				"${BUILT_PRODUCTS_DIR}/HandyJSON/HandyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/YYCache/YYCache.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ATRequest.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HandyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YYCache.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -384,6 +389,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A37A2361FC6B08A00141240 /* BRequest.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				0ADCAE971F6A6B52000E5D37 /* ARequest.swift in Sources */,
@@ -523,6 +529,7 @@
 			baseConfigurationReference = D1E389054AB4EDA6673CB97B /* Pods-ATRequest_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = JL4J322NSA;
 				INFOPLIST_FILE = ATRequest/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -538,6 +545,7 @@
 			baseConfigurationReference = 003B94D1AEB5F04DB45FAB66 /* Pods-ATRequest_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = JL4J322NSA;
 				INFOPLIST_FILE = ATRequest/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -552,6 +560,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D4EBA72477388759DBE38E90 /* Pods-ATRequest_Tests.debug.xcconfig */;
 			buildSettings = {
+				DEVELOPMENT_TEAM = JL4J322NSA;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -573,6 +582,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1804AC1BC3DC7CCC23F35F92 /* Pods-ATRequest_Tests.release.xcconfig */;
 			buildSettings = {
+				DEVELOPMENT_TEAM = JL4J322NSA;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",

@@ -1,6 +1,6 @@
 {
   "name": "ATRequest",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "summary": "A short description of ATRequest.",
   "description": "TODO: Add long description of the pod here.",
   "homepage": "https://github.com/agile-swift/ATRequest",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/agile-swift/ATRequest.git",
-    "tag": "0.1.0"
+    "tag": "0.1.4"
   },
   "platforms": {
     "ios": "9.0"
@@ -22,11 +22,11 @@
     "Alamofire": [
 
     ],
+    "HandyJSON": [
+      "~> 1.8.0"
+    ],
     "YYCache": [
 
-    ],
-    "ObjectMapper": [
-      "3.1.0"
     ]
   },
   "source_files": "ATRequest/Classes/**/*"

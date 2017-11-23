@@ -8,10 +8,18 @@
 
 import UIKit
 
-public enum CacheMode {
-    case noneCache
-    case cacheNoRequest(cacheInterval : TimeInterval)
-    case alwaysRequest(cacheInterval : TimeInterval)
+/// 缓存策略
+///
+/// - unuse: 不使用缓存，不会读取缓存也不会写入缓存
+/// - cacheElseLoad: 优先使用缓存数据，如果没有缓存或缓存过期则重新请求
+/// - cacheAndLoad: 先返回缓存数据，同时也会请求网络更新数据
+/// - cacheDontLoad: 只使用缓存数据，无论是否有缓存数据都不会请求网络
+public enum CachePolicy {
+    case unuse
+    case cacheElseLoad(cacheInterval : TimeInterval?)
+    case cacheAndLoad(cacheInterval : TimeInterval?)
+    case cacheDontLoad(cacheInterval : TimeInterval?)
+
 }
 
 public protocol ATRequest : class {
@@ -32,7 +40,15 @@ public protocol ATRequest : class {
     
     var requestBaseUrlIndex : Int {get}
         
-    var cacheMode : CacheMode {get}
+    var cachePolicy : CachePolicy {get}
+    
+    var contentType : [String] {get}
+    
+    var formData : [FormData]? {get}
+    
+    func requestWithSuccess(_ success:@escaping (Any?,Bool) -> Void,failure:@escaping (NSError)->Void)
+    
+    func request()
 }
 
 public extension ATRequest {

@@ -22,7 +22,7 @@ public enum RequestEnvironment : Int{
 fileprivate let _defaultConfig = RequestConfig()
 
 public class RequestConfig {
-
+    
     public class var environment : RequestEnvironment {
         get { return _defaultConfig.environment }
         set { _defaultConfig.environment = newValue }
@@ -31,6 +31,11 @@ public class RequestConfig {
     public class var timeoutInterval : TimeInterval {
         get { return _defaultConfig.timeoutInterval}
         set { _defaultConfig.timeoutInterval = newValue }
+    }
+    
+    public class var cacheTimeInterval : TimeInterval {
+        get { return _defaultConfig.cacheTimeInterval}
+        set { _defaultConfig.cacheTimeInterval = newValue }
     }
     
     public class var baseUrls : [String]? {
@@ -80,6 +85,7 @@ public class RequestConfig {
     var parameterAction : (inout [String:Any]) -> Void = { (d) in }
     var responseHandler : ((String,URLResponse?,Bool,Any?) -> (error:NSError?,cache:Bool,data:Any?))?
     var timeoutInterval : TimeInterval = 60.0
+    var cacheTimeInterval : TimeInterval = 3600
     lazy var requestManager : ATRequestManager = {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = RequestConfig.timeoutInterval
