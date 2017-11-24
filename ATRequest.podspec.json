@@ -20,7 +20,7 @@
   },
   "dependencies" : {
     "Alamofire" : [],
-    "HandyJSON" : ["~> 1.8.0"],
+    "HandyJSON" : ["4.0.0-beta.1"],
       "YYCache" : []
   },
   "source_files": "ATRequest/Classes/**/*"
