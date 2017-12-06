@@ -1,6 +1,6 @@
 {
   "name": "ATRequest",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "summary": "A short description of ATRequest.",
   "description": "TODO: Add long description of the pod here.",
   "homepage": "https://github.com/agile-swift/ATRequest",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/agile-swift/ATRequest.git",
-    "tag": "0.1.5"
+    "tag": "0.1.6"
   },
   "platforms": {
     "ios": "9.0"
