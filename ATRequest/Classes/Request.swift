@@ -1,53 +1,84 @@
 //
-//  Request.swift
+//  ATRequest.swift
 //  Pods
 //
-//  Created by 凯文马 on 2017/9/15.
+//  Created by 凯文马 on 2017/9/14.
 //
 //
 
 import UIKit
-import Alamofire
 import YYCache
-import HandyJSON
+import Alamofire
+
+/// 缓存策略
+///
+/// - unuse: 不使用缓存，不会读取缓存也不会写入缓存
+/// - cacheElseLoad: 优先使用缓存数据，如果没有缓存或缓存过期则重新请求
+/// - cacheAndLoad: 先返回缓存数据，同时也会请求网络更新数据
+/// - cacheDontLoad: 只使用缓存数据，无论是否有缓存数据都不会请求网络
+public enum CachePolicy {
+    case unuse
+    case cacheElseLoad(cacheInterval : TimeInterval?)
+    case cacheAndLoad(cacheInterval : TimeInterval?)
+    case cacheDontLoad(cacheInterval : TimeInterval?)
+    
+}
 
 public typealias ATRequestManager = SessionManager
 
-open class BaseRequest<T:ResponseModel>: ATRequest {
+public protocol ATRequest : class {
     
-    public init() { }
+    associatedtype ModelType : ResponseModel
     
-    open var requestUrl: String {return "" }
+    var requestDelegate : RequestDelegate? {get}
     
-    open var requestMethod: ATRequestMethod { return .post }
+    var requestUrl: String {get}
     
-    open var requestParameters: [String : Any]? { return nil }
+    var requestMethod: ATRequestMethod {get}
     
-    open var requestHeaders: [String : String]? { return nil }
+    var requestParameters: [String : Any]? {get}
     
-    open var requestUseDefaultParameters : Bool { return true }
+    var requestHeaders: [String : String]? {get}
     
-    open var requestUseDefaultHeaders : Bool { return true }
+    var requestUseDefaultParameters : Bool {get}
     
-    open var requestBaseUrlIndex : Int { return 0 }
+    var requestUseDefaultHeaders : Bool {get}
     
-    open var requestDelegate: RequestDelegate?
+    var requestBaseUrlIndex : Int {get}
     
-    open var cachePolicy: CachePolicy { return .unuse }
+    var cachePolicy : CachePolicy {get}
     
-    open var contentType : [String] { return ["application/json","text/json"] }
+    var contentType : [String] {get}
     
-    open var formData: [FormData]? { return nil }
+    var formData : [FormData]? {get}
+}
+
+public extension ATRequest {
+    var requestMethod: ATRequestMethod { return .post }
     
-    fileprivate var cacheKey : String = ""
+    var requestParameters: [String : Any]? { return nil }
+    
+    var requestHeaders: [String : String]? { return nil }
+    
+    var requestUseDefaultParameters : Bool { return true }
+    
+    var requestUseDefaultHeaders : Bool { return true }
+    
+    var requestBaseUrlIndex : Int { return 0 }
+    
+    var requestDelegate: RequestDelegate? { return nil }
+    
+    var cachePolicy: CachePolicy { return .unuse }
+    
+    var contentType : [String] { return ["application/json","text/json"] }
+    
+    var formData: [FormData]? { return nil }
+}
+
+public extension ATRequest {
     
     public func requestWithSuccess(_ success:@escaping (Any?,Bool) -> Void,failure:@escaping (NSError)->Void) {
-        self.success = success
-        self.failure = failure
-        self.request()
-    }
-    
-    public func request() {
+        
         let header = getHeaders()
         let parameter = getParameters()
         let url = self.getUrl()!
@@ -75,11 +106,10 @@ open class BaseRequest<T:ResponseModel>: ATRequest {
             }
             
             if useCache {
-                self.createCacheKey(url: url, param: parameter, header: header)
                 let data = self.cacheData()
                 if data != nil {
                     let resultObj = self.convertClass(data: data)
-                    self.success?(resultObj as Any,true)
+                    success(resultObj as Any,true)
                     self.requestDelegate?.request(self, didFinishRequestWithObject:resultObj, fromCache: true)
                 }
                 if forceStop {return}
@@ -91,22 +121,21 @@ open class BaseRequest<T:ResponseModel>: ATRequest {
         if !hasFormData {
             let method = self.requestMethod.convert()
             manager.request(url, method: method, parameters: parameter, encoding: URLEncoding.default, headers: header).validate(contentType: self.contentType).responseJSON { [unowned self] (response) in
-                print(response)
                 if response.response != nil {
                     let result = RequestConfig.responseHandler(url,response.response,false,response.result.value)
                     if result.error == nil {
                         let data = result.data
                         self.saveCache(data: data)
                         let resultObj = self.convertClass(data: data)
-                        self.success?(resultObj as Any,result.cache)
+                        success(resultObj as Any,result.cache)
                         self.requestDelegate?.request(self, didFinishRequestWithObject:resultObj, fromCache: result.cache)
                     } else {
-                        self.failure?(result.error!)
+                        failure(result.error!)
                         self.requestDelegate?.request(self, didFailedRequestWithError: result.error!)
                     }
                 } else {
                     let e = NSError.noResponseError()
-                    self.failure?(e)
+                    failure(e)
                     self.requestDelegate?.request(self, didFailedRequestWithError: e)
                 }
             }
@@ -147,56 +176,55 @@ open class BaseRequest<T:ResponseModel>: ATRequest {
                         multipartFormData.append(data!, withName: key)
                     }
                 }
-            }, to: url, encodingCompletion: { (encodingResult) in
-                switch encodingResult {
-                    
-                case .success(let request, _, _):
-                    request.responseJSON(completionHandler: { (response) in
-                        print(response)
-                        if response.response != nil {
-                            let result = RequestConfig.responseHandler(url,response.response,false,response.result.value)
-                            if result.error == nil {
-                                let data = result.data
-                                let resultObj = self.convertClass(data: data)
-                                self.success?(resultObj as Any,result.cache)
-                                self.requestDelegate?.request(self, didFinishRequestWithObject:resultObj, fromCache: result.cache)
+                }, to: url, encodingCompletion: { (encodingResult) in
+                    switch encodingResult {
+                        
+                    case .success(let request, _, _):
+                        request.responseJSON(completionHandler: { (response) in
+                            if response.response != nil {
+                                let result = RequestConfig.responseHandler(url,response.response,false,response.result.value)
+                                if result.error == nil {
+                                    let data = result.data
+                                    let resultObj = self.convertClass(data: data)
+                                    success(resultObj as Any,result.cache)
+                                    self.requestDelegate?.request(self, didFinishRequestWithObject:resultObj, fromCache: result.cache)
+                                } else {
+                                    failure(result.error!)
+                                    self.requestDelegate?.request(self, didFailedRequestWithError: result.error!)
+                                }
                             } else {
-                                self.failure?(result.error!)
-                                self.requestDelegate?.request(self, didFailedRequestWithError: result.error!)
+                                let e = NSError.noResponseError()
+                                failure(e)
+                                self.requestDelegate?.request(self, didFailedRequestWithError: e)
                             }
-                        } else {
-                            let e = NSError.noResponseError()
-                            self.failure?(e)
-                            self.requestDelegate?.request(self, didFailedRequestWithError: e)
-                        }
-                    })
-                    break
-                case .failure(let error):
-                    self.failure?(error as NSError)
-                    self.requestDelegate?.request(self, didFailedRequestWithError: error)
-                }
+                        })
+                        break
+                    case .failure(let error):
+                        failure(error as NSError)
+                        self.requestDelegate?.request(self, didFailedRequestWithError: error)
+                    }
             })
         }
         
-        
+    }
+    
+    public func request() {
+        requestWithSuccess({ _,_ in }, failure: { _ in })
     }
     
     // MARK : - private
-    private var success : ((Any?,Bool) -> Void)?
-    
-    private var failure : ((NSError) -> Void)?
     
     private func convertClass(data:Any?) -> Any? {
         if data == nil { return nil }
-        if T.self ==  RawResponseData.self {return data}
+        if ModelType.self ==  RawResponseData.self {return data}
         if data is [Any] {
             let datas = data as! [Any]
-            let result = datas.map({ (dict) -> T? in
-                return T.deserialize(from: dict as? [String : Any])
+            let result = datas.map({ (dict) -> ModelType? in
+                return ModelType.deserialize(from: dict as? [String : Any])
             })
             return result
         } else if data is [String : Any] {
-            return T.deserialize(from: (data as? [String : Any]))
+            return ModelType.deserialize(from: (data as? [String : Any]))
         }
         return nil
     }
@@ -234,10 +262,11 @@ open class BaseRequest<T:ResponseModel>: ATRequest {
         }
         return urls[self.requestBaseUrlIndex] + url
     }
+    
 }
 
-extension BaseRequest {
-    func createCacheKey(url:String,param:[String:Any]?,header:[String:String]?) {
+fileprivate extension ATRequest {
+    func createCacheKey(url:String,param:[String:Any]?,header:[String:String]?) -> String {
         var p = param?.sorted { (a, b) -> Bool in
             return a.key > b.key
         }
@@ -255,7 +284,11 @@ extension BaseRequest {
         for (k,y) in h! {
             hs += "\(k):\(y)"
         }
-        self.cacheKey = url + ps + hs
+        return url + ps + hs
+    }
+    
+    var cacheKey : String {
+        return createCacheKey(url: getUrl() ?? "", param: getParameters(), header: getHeaders())
     }
     
     func cacheData() -> Any? {
@@ -293,4 +326,3 @@ extension BaseRequest {
         }
     }
 }
-
