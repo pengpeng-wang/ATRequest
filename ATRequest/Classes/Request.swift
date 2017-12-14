@@ -26,9 +26,9 @@ public enum CachePolicy {
 
 public typealias ATRequestManager = SessionManager
 
-public protocol ATRequest : class {
+public protocol ATRequestType : class {
     
-    associatedtype ModelType : ResponseModel
+    associatedtype ModelType : ResponseModelType
     
     var requestDelegate : RequestDelegate? {get}
     
@@ -53,7 +53,7 @@ public protocol ATRequest : class {
     var formData : [FormData]? {get}
 }
 
-public extension ATRequest {
+public extension ATRequestType {
     var requestMethod: ATRequestMethod { return .post }
     
     var requestParameters: [String : Any]? { return nil }
@@ -75,137 +75,156 @@ public extension ATRequest {
     var formData: [FormData]? { return nil }
 }
 
-public extension ATRequest {
+public extension ATRequestType {
     
-    public func requestWithSuccess(_ success:@escaping (Any?,Bool) -> Void,failure:@escaping (NSError)->Void) {
+    public func requestWithSuccess(_ success:@escaping (ModelType?,Bool) -> Void,failure:@escaping (NSError)->Void) {
         
-        let header = getHeaders()
-        let parameter = getParameters()
-        let url = self.getUrl()!
-        
-        let hasFormData = (self.formData != nil)
-        
-        if !hasFormData {
-            var useCache = false
-            var stop = false
-            var forceStop = false
-            switch self.cachePolicy {
-            case .unuse: break
-            case .cacheAndLoad(cacheInterval: _):
-                useCache = true
-                stop = false
-                break
-            case .cacheElseLoad(cacheInterval: _):
-                useCache = true
-                stop = true
-                break
-            case .cacheDontLoad(cacheInterval: _):
-                useCache = true
-                forceStop = true
-                break
-            }
+        DispatchQueue.global().async {
+            let header = self.getHeaders()
+            let parameter = self.getParameters()
+            let url = self.getUrl()!
             
-            if useCache {
-                let data = self.cacheData()
-                if data != nil {
-                    let resultObj = self.convertClass(data: data)
-                    success(resultObj as Any,true)
-                    self.requestDelegate?.request(self, didFinishRequestWithObject:resultObj, fromCache: true)
+            let hasFormData = (self.formData != nil)
+            
+            if !hasFormData {
+                var useCache = false
+                var stop = false
+                var forceStop = false
+                switch self.cachePolicy {
+                case .unuse: break
+                case .cacheAndLoad(cacheInterval: _):
+                    useCache = true
+                    stop = false
+                    break
+                case .cacheElseLoad(cacheInterval: _):
+                    useCache = true
+                    stop = true
+                    break
+                case .cacheDontLoad(cacheInterval: _):
+                    useCache = true
+                    forceStop = true
+                    break
                 }
-                if forceStop {return}
-                if stop && data != nil { return }
-            }
-        }
-        let manager = RequestConfig.requestManager
-        
-        if !hasFormData {
-            let method = self.requestMethod.convert()
-            manager.request(url, method: method, parameters: parameter, encoding: URLEncoding.default, headers: header).validate(contentType: self.contentType).responseJSON { [unowned self] (response) in
-                if response.response != nil {
-                    let result = RequestConfig.responseHandler(url,response.response,false,response.result.value)
-                    if result.error == nil {
-                        let data = result.data
-                        self.saveCache(data: data)
+                
+                if useCache {
+                    let data = self.cacheData()
+                    if data != nil {
                         let resultObj = self.convertClass(data: data)
-                        success(resultObj as Any,result.cache)
-                        self.requestDelegate?.request(self, didFinishRequestWithObject:resultObj, fromCache: result.cache)
-                    } else {
-                        failure(result.error!)
-                        self.requestDelegate?.request(self, didFailedRequestWithError: result.error!)
+                        success(resultObj,true)
+                        self.requestDelegate?.request(self, didFinishRequestWithObject:resultObj, fromCache: true)
                     }
-                } else {
-                    let e = NSError.noResponseError()
-                    failure(e)
-                    self.requestDelegate?.request(self, didFailedRequestWithError: e)
+                    if forceStop {return}
+                    if stop && data != nil { return }
                 }
             }
-        } else {
-            manager.upload(multipartFormData: { [weak self] (multipartFormData) in
-                for fd in (self?.formData!)! {
-                    let url = fd.url
-                    
-                    if url != nil {
-                        let mimeType = fd.mimeType
-                        let fileName = fd.filename
-                        if mimeType != nil && fileName != nil {
-                            multipartFormData.append(url!, withName: fd.name, fileName: fileName!, mimeType: mimeType!)
-                        } else {
-                            multipartFormData.append(url!, withName: fd.name)
-                        }
-                    } else {
-                        let data = fd.data
-                        if data != nil {
-                            let mimeType = fd.mimeType
-                            if mimeType != nil {
-                                let fileName = fd.filename
-                                if fileName != nil {
-                                    multipartFormData.append(data!, withName: fd.name, fileName: fileName!, mimeType: fd.mimeType!)
-                                } else {
-                                    multipartFormData.append(data!, withName: fd.name, mimeType: mimeType!)
+            let manager = RequestConfig.requestManager
+            
+            if !hasFormData {
+                let method = self.requestMethod.convert()
+                manager.request(url, method: method, parameters: parameter, encoding: URLEncoding.default, headers: header).validate(contentType: self.contentType).responseJSON { [unowned self] (response) in
+                    DispatchQueue.global().async {
+                        if response.response != nil {
+                            let result = RequestConfig.responseHandler(url,response.response,false,response.result.value)
+                            if result.error == nil {
+                                let data = result.data
+                                self.saveCache(data: data)
+                                let resultObj = self.convertClass(data: data)
+                                DispatchQueue.main.async {
+                                    success(resultObj,result.cache)
+                                    self.requestDelegate?.request(self, didFinishRequestWithObject:resultObj, fromCache: result.cache)
                                 }
                             } else {
-                                multipartFormData.append(data!, withName: fd.name)
-                            }
-                        }
-                    }
-                }
-                for (key,value) in parameter ?? [:] {
-                    let v = "\(value)"
-                    let data = v.data(using: String.Encoding.utf8)
-                    if (data != nil) {
-                        multipartFormData.append(data!, withName: key)
-                    }
-                }
-                }, to: url, encodingCompletion: { (encodingResult) in
-                    switch encodingResult {
-                        
-                    case .success(let request, _, _):
-                        request.responseJSON(completionHandler: { (response) in
-                            if response.response != nil {
-                                let result = RequestConfig.responseHandler(url,response.response,false,response.result.value)
-                                if result.error == nil {
-                                    let data = result.data
-                                    let resultObj = self.convertClass(data: data)
-                                    success(resultObj as Any,result.cache)
-                                    self.requestDelegate?.request(self, didFinishRequestWithObject:resultObj, fromCache: result.cache)
-                                } else {
+                                DispatchQueue.main.async {
                                     failure(result.error!)
                                     self.requestDelegate?.request(self, didFailedRequestWithError: result.error!)
                                 }
-                            } else {
-                                let e = NSError.noResponseError()
+                            }
+                        } else {
+                            let e = NSError.noResponseError()
+                            DispatchQueue.main.async {
                                 failure(e)
                                 self.requestDelegate?.request(self, didFailedRequestWithError: e)
                             }
-                        })
-                        break
-                    case .failure(let error):
-                        failure(error as NSError)
-                        self.requestDelegate?.request(self, didFailedRequestWithError: error)
+                        }
                     }
-            })
+                }
+            } else {
+                manager.upload(multipartFormData: { [weak self] (multipartFormData) in
+                    for fd in (self?.formData!)! {
+                        let url = fd.url
+                        
+                        if url != nil {
+                            let mimeType = fd.mimeType
+                            let fileName = fd.filename
+                            if mimeType != nil && fileName != nil {
+                                multipartFormData.append(url!, withName: fd.name, fileName: fileName!, mimeType: mimeType!)
+                            } else {
+                                multipartFormData.append(url!, withName: fd.name)
+                            }
+                        } else {
+                            let data = fd.data
+                            if data != nil {
+                                let mimeType = fd.mimeType
+                                if mimeType != nil {
+                                    let fileName = fd.filename
+                                    if fileName != nil {
+                                        multipartFormData.append(data!, withName: fd.name, fileName: fileName!, mimeType: fd.mimeType!)
+                                    } else {
+                                        multipartFormData.append(data!, withName: fd.name, mimeType: mimeType!)
+                                    }
+                                } else {
+                                    multipartFormData.append(data!, withName: fd.name)
+                                }
+                            }
+                        }
+                    }
+                    for (key,value) in parameter ?? [:] {
+                        let v = "\(value)"
+                        let data = v.data(using: String.Encoding.utf8)
+                        if (data != nil) {
+                            multipartFormData.append(data!, withName: key)
+                        }
+                    }
+                    }, to: url, encodingCompletion: { [unowned self] (encodingResult) in
+                        DispatchQueue.global().async {
+                            switch encodingResult {
+                            case .success(let request, _, _):
+                                request.responseJSON(completionHandler: { (response) in
+                                    if response.response != nil {
+                                        let result = RequestConfig.responseHandler(url,response.response,false,response.result.value)
+                                        if result.error == nil {
+                                            let data = result.data
+                                            let resultObj = self.convertClass(data: data)
+                                            DispatchQueue.main.async {
+                                                success(resultObj,result.cache)
+                                                self.requestDelegate?.request(self, didFinishRequestWithObject:resultObj, fromCache: result.cache)
+                                            }
+                                        } else {
+                                            DispatchQueue.main.async {
+                                                failure(result.error!)
+                                                self.requestDelegate?.request(self, didFailedRequestWithError: result.error!)
+                                            }
+                                        }
+                                    } else {
+                                        let e = NSError.noResponseError()
+                                        DispatchQueue.main.async {
+                                            failure(e)
+                                            self.requestDelegate?.request(self, didFailedRequestWithError: e)
+                                        }
+                                    }
+                                })
+                                break
+                            case .failure(let error):
+                                DispatchQueue.main.async {
+                                    failure(error as NSError)
+                                    self.requestDelegate?.request(self, didFailedRequestWithError: error)
+                                }
+                                break
+                            }
+                        }
+                })
+            }
         }
-        
     }
     
     public func request() {
@@ -214,19 +233,14 @@ public extension ATRequest {
     
     // MARK : - private
     
-    private func convertClass(data:Any?) -> Any? {
+    private func convertClass(data:Any?) -> ModelType? {
         if data == nil { return nil }
-        if ModelType.self ==  RawResponseData.self {return data}
-        if data is [Any] {
-            let datas = data as! [Any]
-            let result = datas.map({ (dict) -> ModelType? in
-                return ModelType.deserialize(from: dict as? [String : Any])
-            })
-            return result
-        } else if data is [String : Any] {
-            return ModelType.deserialize(from: (data as? [String : Any]))
+        if ModelType.self == RawResponseData.self {
+            let result = RawResponseData(data)
+            return result as? ModelType
         }
-        return nil
+        let result = ModelType.convert(datas: data!)
+        return result as? ModelType
     }
     
     private func getParameters() -> [String:Any]? {
@@ -265,7 +279,7 @@ public extension ATRequest {
     
 }
 
-fileprivate extension ATRequest {
+fileprivate extension ATRequestType {
     func createCacheKey(url:String,param:[String:Any]?,header:[String:String]?) -> String {
         var p = param?.sorted { (a, b) -> Bool in
             return a.key > b.key
@@ -325,4 +339,41 @@ fileprivate extension ATRequest {
             cache?.setObject(cacheModel, forKey: self.cacheKey)
         }
     }
+}
+
+open class ATRequest<Model : ResponseModelType> : ATRequestType {
+    
+    public init() {}
+    
+    public convenience init(delegate : RequestDelegate?) {
+        self.init()
+        self.requestDelegate = delegate
+    }
+    
+    open var requestDelegate: RequestDelegate?
+    
+    public typealias ModelType = Model
+    
+    open var requestUrl: String {
+        fatalError("please implemente in subclass")
+    }
+    
+    open var requestMethod: ATRequestMethod { return .post }
+    
+    open var requestParameters: [String : Any]? { return nil }
+    
+    open var requestHeaders: [String : String]? { return nil }
+    
+    open var requestUseDefaultParameters : Bool { return true }
+    
+    open var requestUseDefaultHeaders : Bool { return true }
+    
+    open var requestBaseUrlIndex : Int { return 0 }
+    
+    open var cachePolicy: CachePolicy { return .unuse }
+    
+    open var contentType : [String] { return ["application/json","text/json"] }
+    
+    open var formData: [FormData]? { return nil }
+    
 }

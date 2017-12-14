@@ -37,3 +37,20 @@ extension NSError {
         return self.userInfo[NSLocalizedDescriptionKey] as? String
     }
 }
+
+struct ATError : Error {
+    let code : Int
+    let message : String
+    init(code : Int, message : String) {
+        self.code = code
+        self.message = message
+    }
+    init(_ error : NSError) {
+        self.code = error.code
+        self.message = error.userInfo[NSLocalizedDescriptionKey] as! String
+    }
+    
+    static var ConvertError : ATError {
+        return ATError.init(code: -13911, message: "类型转换错误")
+    }
+}

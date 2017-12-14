@@ -9,16 +9,66 @@
 import UIKit
 import HandyJSON
 
-public protocol ResponseModel : HandyJSON{
+public protocol ResponseModelType {
+    static func isArrayType() -> Bool
+    static func convert(datas : Any) -> ResponseModelType?
+}
+
+extension Array : ResponseModelType {
+    public static func convert(datas: Any) -> ResponseModelType? {
+        print(Element.Type.self)
+        print(ResponseModel.Type.self)
+        guard let data = datas as? [Any],
+            Element.self is ResponseModel.Type else {
+            return nil
+        }
+        let elementType = Element.self as! ResponseModel.Type
+        let result = data.flatMap { (dict) -> ResponseModel? in
+            return elementType.deserialize(from: dict as? [String : Any])
+        }
+        return result
+    }
     
+    public static func isArrayType() -> Bool {
+        return true
+    }
+}
+
+public protocol ResponseModel : HandyJSON,ResponseModelType{
+    
+}
+
+public extension ResponseModel {
+    public static func isArrayType() -> Bool {
+        return false
+    }
+    
+    public static func convert(datas: Any) -> ResponseModelType? {
+        guard let data = datas as? [String : Any] else {
+            return nil
+        }
+        return self.deserialize(from: data)
+    }
 }
 
 public protocol ResponseEnum  : HandyJSONEnum{
     
 }
 
-public struct RawResponseData : ResponseModel{
-    public init() {}
+public struct RawResponseData : ResponseModel {
+    public init() {
+        _rawData = nil
+    }
+    
+    public var rawData : Any? {
+        return _rawData
+    }
+    
+    private let _rawData : Any?
+    
+    public init(_ raw : Any?) {
+        _rawData = raw
+    }
 }
 
 public protocol FormData {

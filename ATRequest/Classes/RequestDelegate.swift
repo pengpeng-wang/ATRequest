@@ -8,9 +8,9 @@
 
 import UIKit
 
-public protocol RequestDelegate {
+public protocol RequestDelegate : class {
     
-    func request<Request : ATRequest>(_ request:Request,didFinishRequestWithObject object:Any?,fromCache:Bool)
+    func request<Request : ATRequestType>(_ request:Request,didFinishRequestWithObject object:Any?,fromCache:Bool)
     
-    func request<Request : ATRequest>(_ request:Request,didFailedRequestWithError error:Error)
+    func request<Request : ATRequestType>(_ request:Request,didFailedRequestWithError error:Error)
 }
