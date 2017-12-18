@@ -51,6 +51,8 @@ public protocol ATRequestType : class {
     var contentType : [String] {get}
     
     var formData : [FormDataType]? {get}
+    
+    var debugLog : Bool {get}
 }
 
 public extension ATRequestType {
@@ -73,6 +75,8 @@ public extension ATRequestType {
     var contentType : [String] { return ["application/json","text/json"] }
     
     var formData: [FormDataType]? { return nil }
+    
+    var debugLog : Bool { return false }
 }
 
 public extension ATRequestType {
@@ -122,6 +126,9 @@ public extension ATRequestType {
             if !hasFormData {
                 let method = self.requestMethod.convert()
                 manager.request(url, method: method, parameters: parameter, encoding: URLEncoding.default, headers: header).validate(contentType: self.contentType).responseJSON { [unowned self] (response) in
+                    if self.debugLog {
+                        print(response)
+                    }
                     DispatchQueue.global().async {
                         if response.response != nil {
                             let result = RequestConfig.responseHandler(url,response.response,false,response.result.value)
@@ -190,6 +197,9 @@ public extension ATRequestType {
                             switch encodingResult {
                             case .success(let request, _, _):
                                 request.responseJSON(completionHandler: { (response) in
+                                    if self.debugLog {
+                                        print(response)
+                                    }
                                     if response.response != nil {
                                         let result = RequestConfig.responseHandler(url,response.response,false,response.result.value)
                                         if result.error == nil {
@@ -215,6 +225,9 @@ public extension ATRequestType {
                                 })
                                 break
                             case .failure(let error):
+                                if self.debugLog {
+                                    print(error)
+                                }
                                 DispatchQueue.main.async {
                                     failure(error as NSError)
                                     self.requestDelegate?.request(self, didFailedRequestWithError: error)
@@ -375,5 +388,7 @@ open class ATRequest<Model : ResponseModelType> : ATRequestType {
     open var contentType : [String] { return ["application/json","text/json"] }
     
     open var formData: [FormDataType]? { return nil }
+    
+    open var debugLog : Bool { return false }
     
 }
