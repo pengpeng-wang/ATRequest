@@ -10,7 +10,6 @@ import UIKit
 import HandyJSON
 
 public protocol ResponseModelType {
-    static func isArrayType() -> Bool
     static func convert(datas : Any) -> ResponseModelType?
 }
 
@@ -28,10 +27,6 @@ extension Array : ResponseModelType {
         }
         return result
     }
-    
-    public static func isArrayType() -> Bool {
-        return true
-    }
 }
 
 public protocol ResponseModel : HandyJSON,ResponseModelType{
@@ -39,10 +34,6 @@ public protocol ResponseModel : HandyJSON,ResponseModelType{
 }
 
 public extension ResponseModel {
-    public static func isArrayType() -> Bool {
-        return false
-    }
-    
     public static func convert(datas: Any) -> ResponseModelType? {
         guard let data = datas as? [String : Any] else {
             return nil
@@ -51,10 +42,11 @@ public extension ResponseModel {
     }
 }
 
-public protocol ResponseEnum  : HandyJSONEnum{
+public protocol ResponseEnum  : HandyJSONEnum {
     
 }
 
+postfix operator ^
 public struct RawResponseData : ResponseModel {
     public init() {
         _rawData = nil
@@ -69,9 +61,13 @@ public struct RawResponseData : ResponseModel {
     public init(_ raw : Any?) {
         _rawData = raw
     }
+    
+    public static postfix func ^(data : RawResponseData) -> Any? {
+        return data.rawData
+    }
 }
 
-public protocol FormData {
+public protocol FormDataType {
     var data : Data? {get}
     var url : URL? {get}
     var name : String {get}
@@ -79,7 +75,7 @@ public protocol FormData {
     var mimeType : String? {get}
 }
 
-public class FormDataEntity : FormData {
+public class FormData : FormDataType {
     public init(data:Data,name : String,filename: String?,mimetype:String?) {
         self.data = data
         self.name = name

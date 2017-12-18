@@ -50,7 +50,7 @@ public protocol ATRequestType : class {
     
     var contentType : [String] {get}
     
-    var formData : [FormData]? {get}
+    var formData : [FormDataType]? {get}
 }
 
 public extension ATRequestType {
@@ -72,7 +72,7 @@ public extension ATRequestType {
     
     var contentType : [String] { return ["application/json","text/json"] }
     
-    var formData: [FormData]? { return nil }
+    var formData: [FormDataType]? { return nil }
 }
 
 public extension ATRequestType {
@@ -374,6 +374,6 @@ open class ATRequest<Model : ResponseModelType> : ATRequestType {
     
     open var contentType : [String] { return ["application/json","text/json"] }
     
-    open var formData: [FormData]? { return nil }
+    open var formData: [FormDataType]? { return nil }
     
 }

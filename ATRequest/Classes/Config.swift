@@ -78,7 +78,7 @@ public class RequestConfig {
         return _defaultConfig.requestManager
     }
     
-    // MARK : - private
+    // MARK: - private
     var environment : RequestEnvironment = .develop
     var baseUrls : [[String]] = [[],[],[],[]]
     var headerAction : (inout [String:String]) -> Void = { (d) in }
