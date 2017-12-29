@@ -24,34 +24,52 @@ public enum CachePolicy {
     
 }
 
+public typealias ATContentType = String
+
 public typealias ATRequestManager = SessionManager
 
+public let DefaultContentTypes : [ATContentType] = ["application/json","text/json"]
+
+/// 网络请求协议
 public protocol ATRequestType : class {
     
+    /// 转换的模型类型，如 [User],User，如需要返回原始数据，请使用RawResponseData
     associatedtype ModelType : ResponseModelType
     
+    /// 请求回调代理，可选
     var requestDelegate : RequestDelegate? {get}
     
+    /// 请求url，必选
     var requestUrl: String {get}
     
+    /// 请求方式，可选，默认POST
     var requestMethod: ATRequestMethod {get}
     
+    /// 请求参数，可选，默认为空
     var requestParameters: [String : Any]? {get}
     
+    /// 请求头信息，可选，默认为空
     var requestHeaders: [String : String]? {get}
     
+    /// 是否拼接默认的全局参数，可选，默认true
     var requestUseDefaultParameters : Bool {get}
     
+    /// 是否拼接默认的全局头信息，可选，默认true
     var requestUseDefaultHeaders : Bool {get}
     
+    /// 请求baseUrl组中url索引，默认0，可能存在某一种环境有多个域名或IP的情况，以此适配
     var requestBaseUrlIndex : Int {get}
     
+    /// 缓存策略，可选，默认不使用缓存
     var cachePolicy : CachePolicy {get}
     
-    var contentType : [String] {get}
+    /// content-type，可选，默认["application/json","text/json"]
+    var contentType : [ATContentType] {get}
     
+    /// 上传文件时使用的表单数据，可选，默认为空
     var formData : [FormDataType]? {get}
     
+    /// 是否打印调试信息，可选，默认false
     var debugLog : Bool {get}
 }
 
@@ -72,7 +90,7 @@ public extension ATRequestType {
     
     var cachePolicy: CachePolicy { return .unuse }
     
-    var contentType : [String] { return ["application/json","text/json"] }
+    var contentType : [ATContentType] { return DefaultContentTypes }
     
     var formData: [FormDataType]? { return nil }
     
@@ -81,6 +99,11 @@ public extension ATRequestType {
 
 public extension ATRequestType {
     
+    /// 通用请求方法，自带回调，只要存在代理，代理方法也会同时触发
+    ///
+    /// - Parameters:
+    ///   - success: 成功回调
+    ///   - failure: 失败回调
     public func requestWithSuccess(_ success:@escaping (ModelType?,Bool) -> Void,failure:@escaping (NSError)->Void) {
         
         DispatchQueue.global().async {
@@ -240,6 +263,7 @@ public extension ATRequestType {
         }
     }
     
+    /// 网络请求方法，适用于代理的情况下
     public func request() {
         requestWithSuccess({ _,_ in }, failure: { _ in })
     }
@@ -354,6 +378,7 @@ fileprivate extension ATRequestType {
     }
 }
 
+/// 网络请求基类，不建议使用，推荐使用协议方式
 open class ATRequest<Model : ResponseModelType> : ATRequestType {
     
     public init() {}
@@ -385,7 +410,7 @@ open class ATRequest<Model : ResponseModelType> : ATRequestType {
     
     open var cachePolicy: CachePolicy { return .unuse }
     
-    open var contentType : [String] { return ["application/json","text/json"] }
+    open var contentType : [ATContentType] { return DefaultContentTypes }
     
     open var formData: [FormDataType]? { return nil }
     

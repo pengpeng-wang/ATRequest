@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (4.5.1)
-  - ATRequest (0.1.4):
+  - ATRequest (0.1.7):
     - Alamofire
     - HandyJSON (= 4.0.0-beta.1)
     - YYCache
@@ -16,7 +16,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
-  ATRequest: aa693dfc10b36d7546ce9b99e23457a02d15e991
+  ATRequest: 636f0d0da429d6288f24e04b5f8c880c5c912efc
   HandyJSON: 428bb18e2c34c2a77361accebf90cf64e4f74118
   YYCache: 8105b6638f5e849296c71f331ff83891a4942952
 

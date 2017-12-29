@@ -34,13 +34,9 @@ class ViewController: UIViewController {
         }
 //        self.request!.requestDelegate = self
         self.request.requestWithSuccess({ (object, cache) in
-
-            guard let models = object as? [TestModel] else {
-                return
-            }
-            _ = models.map({ (model) -> Void in
+            for model in object ?? [] {
                 print(model.rating?.average ?? "")
-            })
+            }
         }) { (e) in
 
         }
@@ -48,11 +44,11 @@ class ViewController: UIViewController {
 }
 
 extension ViewController : RequestDelegate {
-    func request(_ request: ATRequest, didFinishRequestWithObject object: Any?, fromCache: Bool) {
+    func request<Request>(_ request: Request, didFinishRequestWithObject object: Any?, fromCache: Bool) where Request : ATRequestType {
         self.view.backgroundColor = UIColor.red
     }
     
-    func request(_ request: ATRequest, didFailedRequestWithError error: Error) {
+    func request<Request>(_ request: Request, didFailedRequestWithError error: Error) where Request : ATRequestType {
         self.view.backgroundColor = UIColor.blue
     }
 }

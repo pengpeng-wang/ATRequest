@@ -9,7 +9,7 @@
 import UIKit
 import ATRequest
 
-class ARequest : BaseRequest<TestModel> {
+class ARequest : ATRequest<[TestModel]> {
 
     override var requestUrl: String {
         return "https://api.douban.com/v2/movie/top250"
@@ -31,9 +31,9 @@ class ARequest : BaseRequest<TestModel> {
 //        return .cacheNoRequest(cacheInterval: 3600 * 24)
     }
     
-    override var formData: [FormData]? {
+    override var formData: [FormDataType]? {
         let string = "2"
         let data = string.data(using: .utf8)
-        return [FormDataEntity.init(data: data!, name: "count", filename: nil, mimetype: nil)]
+        return [FormData.init(data: data!, name: "count", filename: nil, mimetype: nil)]
     }
 }

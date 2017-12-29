@@ -9,7 +9,7 @@
 import UIKit
 import ATRequest
 
-class BRequest: BaseRequest<RawResponseData> {
+class BRequest: ATRequest<RawResponseData> {
     override var requestUrl: String {
         return "https://httpbin.org/get"
     }

@@ -9,10 +9,12 @@
 import UIKit
 import HandyJSON
 
+/// 获取的响应模型类型
 public protocol ResponseModelType {
     static func convert(datas : Any) -> ResponseModelType?
 }
 
+// MARK: - 为数组扩展响应模型类型协议
 extension Array : ResponseModelType {
     public static func convert(datas: Any) -> ResponseModelType? {
         print(Element.Type.self)
@@ -29,10 +31,12 @@ extension Array : ResponseModelType {
     }
 }
 
+/// 获取的响应模型类型，转换模型
 public protocol ResponseModel : HandyJSON,ResponseModelType{
     
 }
 
+// MARK: - 为模型扩展响应模型类型协议
 public extension ResponseModel {
     public static func convert(datas: Any) -> ResponseModelType? {
         guard let data = datas as? [String : Any] else {
@@ -42,11 +46,14 @@ public extension ResponseModel {
     }
 }
 
+/// 响应类型枚举，必须是遵循这种协议的枚举才可以转换
 public protocol ResponseEnum  : HandyJSONEnum {
     
 }
 
 postfix operator ^
+
+/// 不进行任何转换的原始响应数据包
 public struct RawResponseData : ResponseModel {
     public init() {
         _rawData = nil
@@ -62,11 +69,19 @@ public struct RawResponseData : ResponseModel {
         _rawData = raw
     }
     
+    /// 快速获取原始数据的运算符
+    /// let a = RawResponseData("kevin")
+    /// let b = a^
+    /// print(b)
+    ///
+    /// - Parameter data: 数据包
+    /// - Returns: 原始数据
     public static postfix func ^(data : RawResponseData) -> Any? {
         return data.rawData
     }
 }
 
+/// 表单数据协议，上传文件时使用
 public protocol FormDataType {
     var data : Data? {get}
     var url : URL? {get}
@@ -75,6 +90,7 @@ public protocol FormDataType {
     var mimeType : String? {get}
 }
 
+/// 表单数据类
 public class FormData : FormDataType {
     public init(data:Data,name : String,filename: String?,mimetype:String?) {
         self.data = data
