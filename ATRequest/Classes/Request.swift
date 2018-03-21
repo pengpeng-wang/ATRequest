@@ -165,15 +165,19 @@ public extension ATRequestType {
                                 }
                             } else {
                                 DispatchQueue.main.async {
-                                    failure(result.error!)
-                                    self.requestDelegate?.request(self, didFailedRequestWithError: result.error!)
+                                    if RequestConfig.errorHandler(result.error!) {
+                                        failure(result.error!)
+                                        self.requestDelegate?.request(self, didFailedRequestWithError: result.error!)
+                                    }
                                 }
                             }
                         } else {
                             let e = NSError.noResponseError()
                             DispatchQueue.main.async {
-                                failure(e)
-                                self.requestDelegate?.request(self, didFailedRequestWithError: e)
+                                if RequestConfig.errorHandler(e) {
+                                    failure(e)
+                                    self.requestDelegate?.request(self, didFailedRequestWithError: e)
+                                }
                             }
                         }
                     }

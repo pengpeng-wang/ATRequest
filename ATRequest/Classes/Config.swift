@@ -77,6 +77,10 @@ public final class RequestConfig {
     public class func bindResponseHandler(_ handler:@escaping (String,URLResponse?,Bool,Any?) -> (error:NSError?,cache:Bool,data:Any?)) {
         _defaultConfig.responseHandler = handler
     }
+    
+    public class func bindErrorHandler(_ handler:@escaping (NSError) -> (Bool)) {
+        _defaultConfig.errorHandler = handler
+    }
 
     // MARK: - private
     var environment : RequestEnvironment = .develop
@@ -84,6 +88,7 @@ public final class RequestConfig {
     var headerAction : (inout [String:String]) -> Void = { (d) in }
     var parameterAction : (inout [String:Any]) -> Void = { (d) in }
     var responseHandler : ((String,URLResponse?,Bool,Any?) -> (error:NSError?,cache:Bool,data:Any?))?
+    var errorHandler : (NSError) -> (Bool) = { _ in return true}
     var timeoutInterval : TimeInterval = 60.0
     var cacheTimeInterval : TimeInterval = 3600
     lazy var requestManager : ATRequestManager = {
@@ -106,5 +111,9 @@ public final class RequestConfig {
     
     class var responseHandler : (String,URLResponse?,Bool,Any?) -> (error:NSError?,cache:Bool,data:Any?) {
         return _defaultConfig.responseHandler ?? {(_,_,_,_) in return (NSError.noHandleError(),false,[:] as [String:Any])}
+    }
+    
+    class var errorHandler : (NSError) -> (Bool) {
+        return _defaultConfig.errorHandler
     }
 }
